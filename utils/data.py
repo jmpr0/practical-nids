@@ -72,6 +72,16 @@ def preprocess_data(X_train, y_train, X_test, y_test, X_val=None, y_val=None, da
 
   return X_train, y_train, X_test, y_test, X_val, y_val, encoded_legit_class
 
+def log(results_path, config):
+    
+    # Create the results directory if it does not exist
+    os.makedirs(results_path, exist_ok=True)
+
+    # Initialize the disk logger to save experiment details
+    logger = DiskLogger(results_path)
+
+    logger.log_args(config)
+
 class SimpleTokenizer:
     def __init__(self, token2id):
         self.token2id = dict(token2id)  # Ensure we have a copy to avoid modifying the original
@@ -140,13 +150,3 @@ def build_vocab(texts):
         vocab.update(tokens)
     token2id = {token: idx for idx, token in enumerate(sorted(vocab))}
     return token2id, len(vocab)
-
-def log(results_path, config):
-    
-    # Create the results directory if it does not exist
-    os.makedirs(results_path, exist_ok=True)
-
-    # Initialize the disk logger to save experiment details
-    logger = DiskLogger(results_path)
-
-    logger.log_args(config)
