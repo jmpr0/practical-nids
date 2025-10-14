@@ -82,6 +82,22 @@ def log(results_path, config):
 
     logger.log_args(config)
 
+def build_vocab(texts):
+    vocab = set()
+    for text in texts:
+        tokens = text.split()
+        vocab.update(tokens)
+    token2id = {token: idx for idx, token in enumerate(sorted(vocab))}
+    return token2id, len(vocab)
+    
+def tabular_to_text(X):
+    # Convert numpy array row to string with space-separated numeric values
+    texts = []
+    for row in X:
+        text = " ".join([str(round(x, 4)) for x in row])
+        texts.append(text)
+    return texts
+
 class SimpleTokenizer:
     def __init__(self, token2id):
         self.token2id = dict(token2id)  # Ensure we have a copy to avoid modifying the original
@@ -119,7 +135,7 @@ class SimpleTokenizer:
 
     def __call__(self, text, max_length=128, truncation=True, padding="max_length", return_tensors=None):
         return self.encode(text, max_length, truncation, padding, return_tensors)
-
+    
 class TextDataset(Dataset):
     def __init__(self, texts, tokenizer, max_length=128):
         self.texts = texts
@@ -134,19 +150,3 @@ class TextDataset(Dataset):
         input_ids = encoded.input_ids.squeeze(0)
         attention_mask = encoded.attention_mask.squeeze(0)
         return input_ids, attention_mask
-    
-def tabular_to_text(X):
-    # Convert numpy array row to string with space-separated numeric values
-    texts = []
-    for row in X:
-        text = " ".join([str(round(x, 4)) for x in row])
-        texts.append(text)
-    return texts
-
-def build_vocab(texts):
-    vocab = set()
-    for text in texts:
-        tokens = text.split()
-        vocab.update(tokens)
-    token2id = {token: idx for idx, token in enumerate(sorted(vocab))}
-    return token2id, len(vocab)
