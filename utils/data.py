@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler, OrdinalEncoder, LabelEncoder
 from sklearn.model_selection import train_test_split
+import torch
 from torch.utils.data import Dataset
 from utils.logging import DiskLogger
 
@@ -121,7 +122,6 @@ class SimpleTokenizer:
 
         attention_mask = [1] * (max_length - pad_len) + [0] * pad_len
 
-        import torch
         input_ids_tensor = torch.tensor([token_ids])
         attention_mask_tensor = torch.tensor([attention_mask])
 
